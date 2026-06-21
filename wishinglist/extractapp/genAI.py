@@ -3,8 +3,7 @@ import google.generativeai as genai
 from dotenv import load_model, load_dotenv
 import os
 
-# Pune aici cheia ta API gratuită generată din Google AI Studio
-# În producție, această cheie se va ține ascunsă în setări sau variabile de mediu
+
 load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
