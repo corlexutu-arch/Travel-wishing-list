@@ -11,11 +11,11 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 def extrage_date_calatorie(descriere_text, ecran_text):
     """
-    Trimite textul descrierii și textul OCR de pe ecran către Gemini LLM.
+    Trimitere textul descrierii și textul OCR de pe ecran către Gemini LLM.
     Returnează un dicționar Python (JSON) structurat pentru tabelul Django.
     """
     
-    # 1. Unim cele două surse de text într-un singur context clar pentru AI
+    # 1. Unirea celor două surse de text într-un singur context clar pentru AI
     context_complet = f"""
     --- TEXT DIN DESCRIEREA CLIPULUI (CAPTION) ---
     {descriere_text}
@@ -24,7 +24,7 @@ def extrage_date_calatorie(descriere_text, ecran_text):
     {ecran_text}
     """
 
-    # 2. Construim instrucțiunea (Prompt-ul) cu reguli stricte de formatare în limba Română
+    # 2. Construirea instrucțiunea (Prompt-ul) cu reguli stricte de formatare în limba Română
     prompt = f"""
     Ești un asistent inteligent specializat în travel și organizarea vacanțelor.
     Analizează textele de mai jos extrase dintr-un clip video de tip Reel/Shorts despre o destinație turistică.
@@ -45,26 +45,20 @@ def extrage_date_calatorie(descriere_text, ecran_text):
     """
 
     try:
-        # Folosim modelul Flash, ideal pentru procesare rapidă de text și complet gratuit
+        # folosire model Flash, pentru procesare rapidă de text
         model = genai.GenerativeModel("gemini-2.5-flash")
         response = model.generate_content(prompt)
         
-        # Curățăm răspunsul de eventuale spații sau caractere ciudate lăsate de LLM
+        # curățare răspuns de eventuale spații lăsate de LLM
         text_raspuns = response.text.strip()
         
-        # Siguranță suplimentară în caz că AI-ul a ignorat instrucțiunea și a pus markdown-ul ```json
-        if text_raspuns.startswith("```json"):
-            text_raspuns = text_raspuns.replace("```json", "").replace("```", "").strip()
-        elif text_raspuns.startswith("```"):
-            text_raspuns = text_raspuns.replace("```", "").strip()
-
-        # Transformăm textul JSON primit de la AI într-un dicționar nativ de Python
+        # trasnformarea textului JSON primit de la AI într-un dicționar nativ de Python
         date_structurate = json.loads(text_raspuns)
         return date_structurate
 
     except Exception as e:
         print(f"Eroare la parsarea sau apelul Gemini API: {e}")
-        # Returnăm un fallback (valori de siguranță) ca să nu se blocheze aplicația Django
+        # valori de siguranță pentru a nu se bloca aplicața Django
         return {
             "tara": "Eroare AI",
             "locul": "Nespecificat",

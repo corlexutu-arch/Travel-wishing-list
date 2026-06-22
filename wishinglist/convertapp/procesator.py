@@ -11,7 +11,7 @@ def proceseaza_video_si_descriere(url):
     # 1. Configurare yt-dlp pentru descărcare video temporar
     nume_fisier_video = "temporar_reel.mp4"
     ydl_opts = {
-        'format': 'best[ext=mp4]/best', # Vrem format MP4 compatibil cu OpenCV
+        'format': 'best[ext=mp4]/best',
         'outtmpl': nume_fisier_video,
         'quiet': True,
     }
@@ -20,9 +20,9 @@ def proceseaza_video_si_descriere(url):
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            # Extragem informațiile despre video
+            # extragere informații despre video
             info = ydl.extract_info(url, download=True)
-            # Luăm textul din descriere (caption-ul pus de autor)
+            # extragere text din descriere 
             text_descriere = info.get('description', '')
     except Exception as e:
         print(f"Eroare la descărcare sau extragere descriere: {e}")
@@ -31,15 +31,15 @@ def proceseaza_video_si_descriere(url):
     # 2. Procesare Video OCR (Citire text de pe ecran)
     text_ecran_lista = []
     
-    # Verificăm dacă fișierul video s-a descărcat cu succes înainte de a-l deschide
+    # verificare dacă fișierul video s-a descărcat cu succes înainte de a fi deschis
     if os.path.exists(nume_fisier_video):
         try:
-            # Inițializăm cititorul EasyOCR pentru Engleză și Română
+            # initializere cititorul EasyOCR pentru Engleză și Română
             reader = easyocr.Reader(['en', 'ro'], gpu=False) # gpu=False se asigură că rulează stabil pe procesor (CPU)
             
-            # Deschidem video-ul cu OpenCV
+            # deschidere video-ul cu OpenCV
             cap = cv2.VideoCapture(nume_fisier_video)
-            fps = cap.get(cv2.CAP_PROP_FPS) # Numărul de cadre pe secundă
+            fps = cap.get(cv2.CAP_PROP_FPS) # numărul de cadre pe secundă
             
             if fps == 0: 
                 fps = 30 # Valoare de siguranță în caz că metadatele lipsesc
@@ -49,12 +49,11 @@ def proceseaza_video_si_descriere(url):
             while True:
                 ret, frame = cap.read()
                 if not ret:
-                    break # Am ajuns la finalul video-ului
+                    break
                 
-                # Pentru a fi rapizi, nu citim fiecare cadru (ar fi 30 de imagini pe secundă!).
-                # Citim doar UN SINGUR cadru la fiecare 1.5 secunde din video.
+                # citire un cadru la fiecare 1.5 secunde din video.
                 if numar_cadru % int(fps * 1.5) == 0:
-                    # Rulăm OCR pe cadrul curent
+                    # rulare OCR pe cadrul curent
                     rezultat_ocr = reader.readtext(frame, detail=0) # detail=0 returnează doar textul curat, fără coordonate
                     if rezultat_ocr:
                         text_ecran_lista.extend(rezultat_ocr)
@@ -65,15 +64,15 @@ def proceseaza_video_si_descriere(url):
         except Exception as e:
             print(f"Eroare la procesarea OCR a video-ului: {e}")
         finally:
-            # Ștergem fișierul video de pe disc după ce am terminat, ca să nu ocupe spațiu
+            # odata terminată procesarea, fișierul video se șterge
             if os.path.exists(nume_fisier_video):
                 os.remove(nume_fisier_video)
 
-    # Eliminăm duplicatele de text (dacă un text a stat pe ecran mai multe secunde, va apărea de mai multe ori)
+    # eliminarea cuvintelor duplicat, în situația în care rămân afișate timp de mai multe cadre 
     text_ecran_unic = list(set(text_ecran_lista))
     text_ecran_final = " ".join(text_ecran_unic)
 
-    # Returnăm rezultatele sub formă de dicționar Python
+    # returnare rezultat sub formă de dicționar
     return {
         "descriere_text": text_descriere,
         "ecran_text": text_ecran_final

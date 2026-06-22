@@ -20,5 +20,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", include('mainapp.urls')), # Această linie leagă mainapp de site-ul principal
+    path("", include('mainapp.urls')), # această linie leagă mainapp de site-ul principal
 ]
