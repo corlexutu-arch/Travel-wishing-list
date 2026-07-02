@@ -40,8 +40,7 @@ INSTALLED_APPS = [
 
     # Aplicatiile create de mine
     'mainapp',
-    'convertapp',
-    'extractapp'
+    
 ]
 
 MIDDLEWARE = [

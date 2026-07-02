@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from mainapp.models import DestinatieVacanta
 
-from convertapp.procesator import proceseaza_video_si_descriere
-from extractapp.genAI import extrage_date_calatorie
+from mainapp.services.convert import proceseaza_video_si_descriere
+from mainapp.services.extract import extrage_date_calatorie
 
 # Create your views here.
 def homepage (request):
