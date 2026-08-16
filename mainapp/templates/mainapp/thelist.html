@@ -1,0 +1,87 @@
+{% extends 'mainapp/base.html' %}
+
+{% block title %}Lista Destinații - Travelin'{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm p-4 bg-white rounded">
+    <h3 class="mb-4 text-secondary">Visez și pisez, pisez si visez, nicio muncă nu mă face să mă rușinez</h3>
+    
+    <div class="table-responsive">
+        <form method="GET" action="" class="mb-4">
+            <!-- Search Bar -->
+            <div class="input-group mb-3">
+                <input type="text" name="q" class="form-control" placeholder="Caută după Țară sau Activități..." value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-primary px-4">Caută</button>
+            </div>
+
+            <!-- Dropdown Filters -->
+            <div class="row g-2">
+                <!-- Dynamic Country Dropdown -->
+                <div class="col-md-5">
+                    <select name="tara" class="form-select">
+                        <option value="">Toate Țările</option>
+                        {% for item in tari_list %}
+                            <option value="{{ item }}" {% if request.GET.tara == item %}selected{% endif %}>
+                                {{ item }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Dynamic Category Dropdown -->
+                <div class="col-md-5">
+                    <select name="categorie" class="form-select">
+                        <option value="">Toate Categoriile</option>
+                        {% for item in categorii_list %}
+                            <option value="{{ item }}" {% if request.GET.categorie == item %}selected{% endif %}>
+                                {{ item }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-secondary w-100">Filtrează</button>
+                </div>
+            </div>
+        </form>
+
+        <table class="table">
+            <thead style="--bs-table-bg: #E8C8A3; --bs-table-color: #212529;">
+                <tr>
+                    <th scope="col">Țară</th>
+                    <th scope="col">Locație</th>
+                    <th scope="col">Categorie</th>
+                    <th scope="col">Activități</th>
+                    <th scope="col">Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for destinatie in destinatii %}
+                <tr>
+                    <td><span class="fw-bold">{{ destinatie.tara }}</span></td>
+                    <td>{{ destinatie.locul }}</td>
+                    <td>
+                        {% if destinatie.categorie == "Natura" %}
+                            <span class="badge bg-success">Natura</span>
+                        {% elif destinatie.categorie == "Urban" %}
+                            <span class="badge bg-info text-dark">Urban</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Mixed</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ destinatie.tip_activitate }}</td>
+                    <td><a href="{{ destinatie.link_original }}" target="_blank" class="btn btn-sm btn-outline-primary">Vezi Reel</a></td>
+             
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Nu a fost adăugată nicio destinație încă. Începe de pe prima pagină!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
