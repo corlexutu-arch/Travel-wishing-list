@@ -1,0 +1,47 @@
+{% extends 'mainapp/base.html' %}
+
+{% block title %}Lista Destinații - Travelin'{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm p-4 bg-white rounded">
+    <h3 class="mb-4 text-secondary">Visez și pisez, pisez si visez, nicio muncă nu mă face să mă rușinez</h3>
+    
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Țară</th>
+                    <th>Locație</th>
+                    <th>Categorie</th>
+                    <th>Activități</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for destinatie in destinatii %}
+                <tr>
+                    <td><span class="fw-bold">{{ destinatie.tara }}</span></td>
+                    <td>{{ destinatie.locul }}</td>
+                    <td>
+                        {% if destinatie.categorie == "Natura" %}
+                            <span class="badge bg-success">Natura</span>
+                        {% elif destinatie.categorie == "Urban" %}
+                            <span class="badge bg-info text-dark">Urban</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Mixed</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ destinatie.tip_activitate }}</td>
+                    <td><a href="{{ destinatie.link_original }}" target="_blank" class="btn btn-sm btn-outline-primary">Vezi Reel</a></td>
+             
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Nu a fost adăugată nicio destinație încă. Începe de pe prima pagină!</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
