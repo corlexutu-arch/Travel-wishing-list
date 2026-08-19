@@ -52,7 +52,7 @@ def proceseaza_video_si_descriere(url):
                     break
                 
                 # citire un cadru la fiecare 1.5 secunde din video.
-                if numar_cadru % int(fps * 1.5) == 0:
+                if numar_cadru % int(fps * 2.5) == 0:
                     # rulare OCR pe cadrul curent
                     rezultat_ocr = reader.readtext(frame, detail=0) # detail=0 returnează doar textul curat, fără coordonate
                     if rezultat_ocr:

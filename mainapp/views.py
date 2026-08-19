@@ -6,6 +6,12 @@ from django.db.models import Q
 from mainapp.services.convert import proceseaza_video_si_descriere
 from mainapp.services.extract import extrage_date_calatorie
 
+def delete_entry(request, pk):
+    if request.method == 'POST':
+        entry = get_object_or_404(DestinatieVacanta, pk=pk)
+        entry.delete()
+    return redirect('the_list')
+
 # Create your views here.
 def homepage (request):
     if request.method == "POST":

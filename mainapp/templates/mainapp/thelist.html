@@ -55,6 +55,8 @@
                     <th scope="col">Categorie</th>
                     <th scope="col">Activități</th>
                     <th scope="col">Link</th>
+                    <!-- ADDED: New header column for actions -->
+                    <th scope="col">Acțiuni</th> 
                 </tr>
             </thead>
             <tbody>
@@ -73,11 +75,22 @@
                     </td>
                     <td>{{ destinatie.tip_activitate }}</td>
                     <td><a href="{{ destinatie.link_original }}" target="_blank" class="btn btn-sm btn-outline-primary">Vezi Reel</a></td>
+                    
+                    <!-- ADDED: Delete button form cell -->
+                    <td>
+                        <form action="{% url 'delete_entry' destinatie.id %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Sigur vrei să ștergi această intrare?');">
+                                Șterge
+                            </button>
+                        </form>
+                    </td>
              
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center text-muted">Nu a fost adăugată nicio destinație încă. Începe de pe prima pagină!</td>
+                    <!-- UPDATED: Changed colspan to 6 to account for the new column -->
+                    <td colspan="6" class="text-center text-muted">Nu a fost adăugată nicio destinație încă. Începe de pe prima pagină!</td>
                 </tr>
                 {% endfor %}
             </tbody>
